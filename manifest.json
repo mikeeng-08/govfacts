@@ -1,0 +1,46 @@
+{
+  "manifest_version": "0.4",
+  "name": "govfacts",
+  "display_name": "GovFacts",
+  "version": "1.0.0",
+  "description": "US Treasury and SEC filing data in Claude. Three tools, no API keys.",
+  "long_description": "GovFacts answers questions about US federal government finances and individual companies' own reported financial statements. Find a company's SEC identifiers, pull its reported revenue, net income, diluted EPS, or shares outstanding straight from its 10-K/10-Q filings over time, or pull US Treasury interest-rate, federal receipts/outlays, or government reporting-exchange-rate data over a date range.\n\nThis is not a market-data tool. There is no stock price, ETF, cryptocurrency, futures, or live FX quote of any kind here, and it cannot compare companies' market performance. It answers 'what did this company report' and 'what does the US government report', nothing else.\n\nData sources: SEC EDGAR (data.sec.gov, www.sec.gov) -- US federal government work, not subject to domestic copyright under 17 U.S.C. 105 -- and US Treasury Fiscal Data (api.fiscaldata.treasury.gov), whose own API documentation states its data is offered free and available to copy, adapt, or redistribute for commercial or non-commercial use. No accounts, no API keys, no caching -- every call reads live from the source. Only your query, company identifier, concept choice, and date range are sent to SEC or Treasury; GovFacts stores nothing.",
+  "author": { "name": "GovFacts" },
+  "icon": "icon.png",
+  "server": {
+    "type": "uv",
+    "entry_point": "server.py",
+    "mcp_config": {
+      "command": "uv",
+      "args": ["run", "--frozen", "--no-dev", "--directory", "${__dirname}", "server.py"],
+      "env": {
+        "GOVFACTS_CONTACT": "${user_config.contact_email}"
+      }
+    }
+  },
+  "user_config": {
+    "contact_email": {
+      "type": "string",
+      "title": "Contact Email for SEC Requests",
+      "description": "SEC requires every automated EDGAR request to declare a real contact identifier (see sec.gov/os/webmaster-faq). Sent only in the User-Agent header of GovFacts's own requests to SEC and Treasury -- never shared elsewhere.",
+      "required": true
+    }
+  },
+  "tools": [
+    { "name": "search_companies", "description": "Find a SEC-registered company's exact ticker and CIK." },
+    { "name": "company_financials", "description": "Get a company's reported revenue, net income, EPS, or shares outstanding from its own SEC filings." },
+    { "name": "treasury_indicator", "description": "Get US Treasury interest-rate, receipts/outlays, or reporting-exchange-rate data over a date range." }
+  ],
+  "prompts": [
+    { "name": "research_brief", "description": "Start a concise, source-cited research brief using only reported/government data.", "arguments": ["topic"], "text": "Use GovFacts to research ${arguments.topic}. Find the relevant company or Treasury dataset, pull reported figures over a meaningful date range, cite source URLs and filing dates, and state plainly that there is no price/market data available." }
+  ],
+  "keywords": ["sec", "treasury", "government", "filings", "fundamentals", "finance"],
+  "privacy_policies": [
+    "https://www.sec.gov/privacy",
+    "https://www.fiscal.treasury.gov/about-us/privacy-policy"
+  ],
+  "compatibility": {
+    "platforms": ["darwin", "win32", "linux"],
+    "runtimes": { "python": ">=3.12,<3.14" }
+  }
+}
