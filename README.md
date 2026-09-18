@@ -23,7 +23,7 @@ set `GOVFACTS_CONTACT=you@example.org` in the server's environment before starti
 
 **Claude Desktop:** Settings → Extensions → Advanced settings → Extension Developer →
 Install Extension… → select `GovFacts.mcpb` from a
-[release](https://github.com/anthonyanzalone/govfacts/releases). Requires a Claude
+[release](https://github.com/mikeeng-08/govfacts/releases). Requires a Claude
 Desktop release with MCPB v0.4 UV-runtime support.
 
 ## Build from source
@@ -33,7 +33,7 @@ Requires [uv](https://docs.astral.sh/uv/).
 ```sh
 uv sync
 uv run python scripts/build_bundle.py   # writes dist/GovFacts.mcpb
-uv run pytest -q                        # 12 tests
+uv run pytest -q                        # 23 tests
 uv run ruff check .
 ```
 
@@ -54,6 +54,23 @@ source. Company figures are exactly as reported; GovFacts does not audit or rest
 them. Treasury dataset frequency varies (monthly or quarterly), never daily. Treasury's
 API has been observed to time out intermittently during development; GovFacts surfaces
 that as an explicit tool error rather than empty data, but expect occasional retries.
+
+## Privacy Policy
+
+- **Data collection:** GovFacts sends only what a tool call needs to answer it —
+  your search terms, ticker/CIK, concept choice, indicator choice, and date range —
+  directly to SEC EDGAR or US Treasury Fiscal Data. Nothing else is collected.
+- **Usage and storage:** requests are made live, on demand. GovFacts does not log,
+  cache, or persist queries, results, or your configured contact email anywhere.
+- **Third-party sharing:** SEC and US Treasury (the two data sources) receive your
+  request parameters and your configured `GOVFACTS_CONTACT` value, sent only in the
+  outgoing request's User-Agent header, exactly as SEC's own fair-access policy
+  requires. See their own policies: [SEC](https://www.sec.gov/privacy),
+  [Treasury](https://www.fiscal.treasury.gov/about-us/privacy-policy).
+- **Data retention:** none. GovFacts has no database, cache, or log of past queries.
+- **Contact:** open an issue at
+  [github.com/mikeeng-08/govfacts/issues](https://github.com/mikeeng-08/govfacts/issues)
+  for product or security concerns.
 
 ## License
 
